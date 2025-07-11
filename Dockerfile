@@ -8,13 +8,14 @@ ENV reverse=0
 ENV nomt=1
 ENV speed=0
 ENV nogui=1
+ENV device=/dev/video0
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update  && \
     apt install -y git
 RUN git clone https://github.com/IldarGreat/dso.git
 RUN apt-get install -y build-essential \
     libsuitesparse-dev libeigen3-dev libboost-all-dev \
-    libopencv-dev 
+    libopencv-dev libv4l-dev
 
 WORKDIR /app
 RUN git clone --recursive https://github.com/stevenlovegrove/Pangolin.git -b v0.6
@@ -41,4 +42,4 @@ WORKDIR /app/dso/build
 RUN cmake .. && \
     make
 
-ENTRYPOINT ./bin/dso_dataset files=set/sequence calib=set/camera.txt mode=${mode} preset=${preset} nolog=${nolog} reverse=${reverse} nomt=${nomt} speed=${speed} nogui=${nogui}
+ENTRYPOINT ./bin/dso_v4l2 device=${device} calib=set/camera.txt mode=${mode} preset=${preset} nolog=${nolog} nomt=${nomt} nogui=${nogui}

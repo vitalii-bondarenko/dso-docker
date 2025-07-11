@@ -120,7 +120,17 @@ Run on a dataset from [https://vision.in.tum.de/mono-dataset](https://vision.in.
 			gamma=XXXXX/sequence_XX/pcalib.txt \
 			vignette=XXXXX/sequence_XX/vignette.png \
 			preset=0 \
-			mode=0
+                        mode=0
+
+To run DSO on a USB camera using v4l2 use
+
+                bin/dso_v4l2 \
+                        device=/dev/video0 \
+                        calib=path/to/camera.txt \
+                        gamma=path/to/pcalib.txt \
+                        vignette=path/to/vignette.png \
+                        preset=0 \
+                        mode=0
 
 See [https://github.com/JakobEngel/dso_ros](https://github.com/JakobEngel/dso_ros) for a minimal example on
 how the library can be used from another project. It should be straight forward to implement extentions for 

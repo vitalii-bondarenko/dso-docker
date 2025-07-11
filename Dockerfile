@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:24.04
 
 WORKDIR /app
 ENV preset=2
@@ -10,7 +10,7 @@ ENV speed=0
 ENV nogui=1
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update  && \
-    apt install -y git
+    apt install -y git python3-pip python3-setuptools
 RUN git clone https://github.com/IldarGreat/dso.git
 RUN apt-get install -y build-essential \
     libsuitesparse-dev libeigen3-dev libboost-all-dev \
@@ -22,9 +22,14 @@ WORKDIR /app/Pangolin
 RUN apt-get install -y cmake && \
     apt-get clean && \
     apt install -y libglew-dev && \
-    apt-get install -y libegl1-mesa-dev
+    apt-get install -y libegl1-mesa-dev && \
+    python3 -m pip install --upgrade pip setuptools
 
-RUN cmake -B build && \
+RUN sed -i 's|#include <pangolin/image/typed_image.h>|#include <pangolin/image/typed_image.h>\n#include <cstdint>|' src/image/image_io_jpg.cpp && \
+    sed -i 's|#include <string>|#include <string>\n#include <cstdint>|' include/pangolin/log/packetstream_tags.h && \
+    sed -i 's|#include <stdexcept>|#include <stdexcept>\n#include <cstdint>|' src/log/packetstream.cpp && \
+    sed -i 's|#include <stdexcept>|#include <stdexcept>\n#include <limits>|' include/pangolin/gl/colour.h && \
+    cmake -B build -DBUILD_PANGOLIN_PYTHON=OFF && \
     cmake --build build
 
 RUN apt-get install -y zlib1g-dev
